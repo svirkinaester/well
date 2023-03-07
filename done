@@ -1,0 +1,49 @@
+import random
+
+class Domino:
+    def __init__(self, top, bottom):
+        self.top = top
+        self.bottom = bottom
+
+class Player:
+    def __init__(self, name):
+        self.name = name
+        self.dominoes = []
+    
+    def add_domino(self, domino):
+        self.dominoes.append(domino)
+        
+    def remove_domino(self, domino):
+        self.dominoes.remove(domino)
+        
+    def has_domino(self, domino):
+        return domino in self.dominoes
+    
+    def __str__(self):
+        return f'{self.name} has {len(self.dominoes)} dominoes.'
+    
+class DominoGame:
+    def __init__(self, players):
+        self.players = players
+        self.dominoes = [Domino(i, j) for i in range(7) for j in range(i, 7)]
+        self.current_domino = None
+        self.current_player_index = None
+        self.winner = None
+        
+    def start(self):
+        random.shuffle(self.dominoes)
+        for i in range(7):
+            for player in self.players:
+                player.add_domino(self.dominoes.pop())
+        
+        self.current_player_index = random.randint(0, len(self.players) - 1)
+        self.current_domino = self.dominoes.pop()
+        print(f'Starting player: {self.players[self.current_player_index].name}')
+        print(f'Starting domino: {self.current_domino.top} | {self.current_domino.bottom}')
+        
+    def play(self):
+        while not self.winner:
+            current_player = self.players[self.current_player_index]
+            print(f'{current_player.name}\'s turn')
+            print(f'{current_player.name}\'s dominoes: {[str(domino.top) + "|" + str(domino.bottom) for domino in current_player.dominoes]}')
+            playable_dominoes = [domino for domino in current_player.dominoes if domino.top == self.current_domino.bottom or domino.bottom == self.current_domino.bottom
